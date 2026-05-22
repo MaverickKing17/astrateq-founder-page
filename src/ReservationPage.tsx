@@ -182,7 +182,7 @@ export default function ReservationPage() {
     const publishableKey = (import.meta as any).env.VITE_STRIPE_PUBLISHABLE_KEY;
     const priceIds = {
       earlybird: (import.meta as any).env.VITE_STRIPE_PRICE_EARLYBIRD,
-      founding: (import.meta as any).env.VITE_STRIPE_PRICE_FOUNDING,
+      founding: (import.meta as any).env.VITE_STRIPE_PRICE_FOUNDING || (import.meta as any).env.VITE_PRICE_STRIPE_FOUNDING,
       guardian: (import.meta as any).env.VITE_STRIPE_PRICE_GUARDIAN,
     };
 
