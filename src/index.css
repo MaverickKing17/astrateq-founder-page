@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-serif: "Outfit", "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --color-primary-charcoal: #09090B;
+  --color-slate-grey: #52525B;
+  --color-brand-cyan: #06B6D4;
+}
+
+body {
+  font-family: var(--font-sans);
+  color: var(--color-primary-charcoal);
+  background-color: #FAFAFA;
+}
+
+.font-serif-heading {
+  font-family: var(--font-serif);
+  letter-spacing: -0.03em;
+  font-weight: 600;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom modern thin border classes and subtle shadows for sleek style */
+.sleek-border {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(228, 228, 231, 0.8);
+}
+
+.sleek-shadow {
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+}
+
+.sleek-dark-border {
+  border-width: 1px;
+  border-style: solid;
+  border-color: rgba(63, 63, 70, 0.6);
+}
+

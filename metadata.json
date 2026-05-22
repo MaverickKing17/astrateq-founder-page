@@ -1,0 +1,6 @@
+{
+  "name": "ASTRA-AI Safety System Reservation",
+  "description": "Pre-launch reservation and priority validation portal for the ASTRA-AI Predictive Vehicle Safety System by Astrateq Gadgets.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
