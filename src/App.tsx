@@ -4,19 +4,33 @@ import { CheckCircle2, ShieldCheck, Mail, ArrowLeft, Heart, Calendar, Lock } fro
 
 export default function App() {
   const [currentPath, setCurrentPath] = useState(window.location.pathname);
+  const [isSuccessQuery, setIsSuccessQuery] = useState(
+    window.location.search.includes('success=true') || 
+    window.location.hash === '#thank-you'
+  );
 
   useEffect(() => {
     // Listen to history transitions or manually check window conditions
     const handleLocationChange = () => {
       setCurrentPath(window.location.pathname);
+      setIsSuccessQuery(
+        window.location.search.includes('success=true') || 
+        window.location.hash === '#thank-you'
+      );
     };
 
     window.addEventListener('popstate', handleLocationChange);
     
     // Periodically pulse or check to ensure seamless dynamic state transitions
     const interval = setInterval(() => {
-      if (window.location.pathname !== currentPath) {
-        setCurrentPath(window.location.pathname);
+      const path = window.location.pathname;
+      const success = window.location.search.includes('success=true') || window.location.hash === '#thank-you';
+      
+      if (path !== currentPath) {
+        setCurrentPath(path);
+      }
+      if (success !== isSuccessQuery) {
+        setIsSuccessQuery(success);
       }
     }, 500);
 
@@ -24,10 +38,10 @@ export default function App() {
       window.removeEventListener('popstate', handleLocationChange);
       clearInterval(interval);
     };
-  }, [currentPath]);
+  }, [currentPath, isSuccessQuery]);
 
   // Dynamic Routing Handler
-  if (currentPath === '/thank-you') {
+  if (currentPath === '/thank-you' || isSuccessQuery) {
     // Generate a random dynamic validation booking code for extreme realism
     const mockBookingId = `AST-B1-${Math.floor(100000 + Math.random() * 900000)}`;
 
@@ -44,6 +58,7 @@ export default function App() {
               onClick={() => {
                 window.history.pushState({}, '', '/');
                 setCurrentPath('/');
+                setIsSuccessQuery(false);
               }} 
               className="inline-flex items-center space-x-2 text-xs font-semibold uppercase tracking-wider text-zinc-500 hover:text-zinc-900 transition"
             >
@@ -150,6 +165,7 @@ export default function App() {
               onClick={() => {
                 window.history.pushState({}, '', '/');
                 setCurrentPath('/');
+                setIsSuccessQuery(false);
               }}
               className="flex-1 py-3 text-xs font-bold uppercase tracking-widest text-white bg-zinc-900 hover:bg-cyan-500 hover:dark:shadow-md rounded text-center transition-all duration-300 cursor-pointer"
             >

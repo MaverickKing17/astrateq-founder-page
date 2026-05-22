@@ -206,7 +206,7 @@ export default function ReservationPage() {
       const { error } = await (stripe as any).redirectToCheckout({
         lineItems: [{ price: priceIds[tier], quantity: 1 }],
         mode: 'payment',
-        successUrl: `${window.location.origin}/thank-you`,
+        successUrl: `${window.location.origin}/?success=true`,
         cancelUrl: window.location.href,
       });
 
@@ -1716,8 +1716,9 @@ export default function ReservationPage() {
                 <button
                   onClick={() => {
                     setStripeSimulatorOpen(false);
-                    // Redirect to simulated thank you page
-                    window.location.href = `${window.location.origin}/thank-you`;
+                    // Redirect to simulated thank you page with zero server-side reloads
+                    window.history.pushState({}, '', '/?success=true');
+                    window.dispatchEvent(new Event('popstate'));
                   }}
                   className="py-3 px-4 text-xs font-bold text-center text-white bg-zinc-950 hover:bg-[#06B6D4] rounded-lg tracking-widest uppercase transition-all whitespace-nowrap cursor-pointer"
                 >
