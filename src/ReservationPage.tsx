@@ -70,6 +70,17 @@ export default function ReservationPage() {
 
   // Hotspot Interactive Screen State (Hero / Architecture Visual Panel)
   const [activeHotspot, setActiveHotspot] = useState<'obd' | 'dashcam' | 'cloud'>('dashcam');
+  const [selectedSubItem, setSelectedSubItem] = useState<string>('drift');
+
+  useEffect(() => {
+    if (activeHotspot === 'dashcam') {
+      setSelectedSubItem('drift');
+    } else if (activeHotspot === 'obd') {
+      setSelectedSubItem('scan');
+    } else if (activeHotspot === 'cloud') {
+      setSelectedSubItem('gps');
+    }
+  }, [activeHotspot]);
 
   // Interactive Checklist State (What's in the box hover indices)
   const [activeBoxItem, setActiveBoxItem] = useState<number>(0);
@@ -375,35 +386,35 @@ export default function ReservationPage() {
                 The Canadian &ldquo;Sandwich Generation&rdquo; faces constant, silent anxiety over aging parents on the road. Traditional dashcams only record crashes; Astrateq Gadgets proactive AI predicts disasters before they strike. Our dual-lens systems mount seamlessly inside their vehicle, shielding them when you can&apos;t be there.
               </p>
 
-              {/* Social Proof Strip */}
+              {/* Core Features & Guarantees Strip */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 py-4 px-5 bg-white rounded-md sleek-border sleek-shadow mb-8 max-w-3xl">
                 <div className="flex items-center space-x-3">
                   <div className="bg-[#06B6D4]/10 p-2 rounded-full text-[#06B6D4]">
                     <ShieldCheck className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-zinc-900 uppercase tracking-wider">247 of 250 spots</p>
-                    <p className="text-[11px] text-zinc-500">Remaining in Batch</p>
+                    <p className="text-xs font-bold text-zinc-900 uppercase tracking-wider">100% Refundable</p>
+                    <p className="text-[11px] text-zinc-500">Stripe Secure Deposit</p>
                   </div>
                 </div>
                 
                 <div className="flex items-center space-x-3 border-t sm:border-t-0 sm:border-l border-zinc-100 sm:pl-4 pt-2 sm:pt-0">
                   <div className="bg-[#06B6D4]/10 p-2 rounded-full text-[#06B6D4]">
-                    <MapPin className="h-4 w-4 stroke-[2.5]" />
+                    <Zap className="h-4 w-4 stroke-[2.5]" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-zinc-900 uppercase tracking-wider">Ships Canada-Wide</p>
-                    <p className="text-[11px] text-zinc-500">Secure Carrier Delivery</p>
+                    <p className="text-xs font-bold text-zinc-900 uppercase tracking-wider">5-Minute Setup</p>
+                    <p className="text-[11px] text-zinc-500">Plug &amp; Play post-1996 cars</p>
                   </div>
                 </div>
 
                 <div className="flex items-center space-x-3 border-t sm:border-t-0 sm:border-l border-zinc-100 sm:pl-4 pt-2 sm:pt-0">
                   <div className="bg-[#06B6D4]/10 p-2 rounded-full text-[#06B6D4]">
-                    <Star className="h-4 w-4 fill-amber-400 stroke-amber-400" />
+                    <Sparkles className="h-4 w-4 text-cyan-500" />
                   </div>
                   <div>
-                    <p className="text-xs font-bold text-zinc-900 uppercase tracking-wider">4.9/5 Rating</p>
-                    <p className="text-[11px] text-zinc-500">From 38 Beta Families</p>
+                    <p className="text-xs font-bold text-zinc-900 uppercase tracking-wider">Lifetime Platform</p>
+                    <p className="text-[11px] text-zinc-500">Zero monthly subscription fees</p>
                   </div>
                 </div>
               </div>
@@ -454,56 +465,185 @@ export default function ReservationPage() {
                     <span className="text-[10px] text-zinc-500">PIPEDA CANADIAN SERVER OK</span>
                   </div>
 
-                  {/* Simulated interactive dashboards with animated alert based on current hotspot */}
-                  <div className="my-auto z-10 flex flex-col items-center">
+                  {/* Simulated interactive dashboards with animated alert based on current hotspot & subitem */}
+                  <div className="my-auto z-10 flex flex-col items-center py-2">
                     <AnimatePresence mode="wait">
                       {activeHotspot === 'dashcam' && (
                         <motion.div 
-                          key="dashcam-alert"
+                          key={`dashcam-${selectedSubItem}`}
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.95 }}
-                          className="text-center"
+                          className="text-center px-2 flex flex-col items-center"
                         >
-                          <AlertTriangle className="h-12 w-12 text-[#06B6D4] mx-auto mb-2 animate-bounce" />
-                          <h4 className="text-white font-semibold text-sm">Predictive Incident Warning</h4>
-                          <p className="text-zinc-300 text-xs mt-1 max-w-xs">Sudden road lane drift & tailgating danger thresholds identified ahead (120m).</p>
+                          {selectedSubItem === 'drift' && (
+                            <>
+                              <AlertTriangle className="h-10 w-10 text-yellow-400 mb-1.5 animate-bounce" />
+                              <h4 className="text-white font-semibold text-xs uppercase tracking-wider">Predictive Lane Drift</h4>
+                              <p className="text-zinc-300 text-[10.5px] mt-0.5 max-w-xs leading-normal">
+                                Scanning boundary markers 50x per sec. Warns if vehicle drifts without turn signal indicator.
+                              </p>
+                            </>
+                          )}
+                          {selectedSubItem === 'tailgate' && (
+                            <>
+                              <Shield className="h-10 w-10 text-cyan-400 mb-1.5 animate-pulse" />
+                              <h4 className="text-white font-semibold text-xs uppercase tracking-wider">Active Safe-Distance</h4>
+                              <p className="text-zinc-300 text-[10.5px] mt-0.5 max-w-xs leading-normal">
+                                Continuous vehicle gap calculations. Triggers instant brake prep as margins cross &le; 1.5s.
+                              </p>
+                            </>
+                          )}
+                          {selectedSubItem === 'drowsy' && (
+                            <>
+                              <Eye className="h-10 w-10 text-rose-400 mb-1.5 animate-pulse" />
+                              <h4 className="text-white font-semibold text-xs uppercase tracking-wider">Driver Focus Assist</h4>
+                              <p className="text-zinc-300 text-[10.5px] mt-0.5 max-w-xs leading-normal">
+                                Infrared cabin track. Sounds local chime if yawn rates or gaze angles suggest drowsiness.
+                              </p>
+                            </>
+                          )}
                         </motion.div>
                       )}
 
                       {activeHotspot === 'obd' && (
                         <motion.div 
-                          key="obd-alert"
+                          key={`obd-${selectedSubItem}`}
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.95 }}
-                          className="text-center"
+                          className="text-center px-2 flex flex-col items-center"
                         >
-                          <CheckCircle2 className="h-12 w-12 text-emerald-400 mx-auto mb-2" />
-                          <h4 className="text-white font-semibold text-sm">Vehicle OBD-II Scan Status</h4>
-                          <p className="text-[#06B6D4] text-xs font-mono mt-1">NO MALFUNCTIONS REPORTED (102 Sensors OK)</p>
-                          <p className="text-zinc-400 text-[10px] mt-1 font-mono">Voltage: 14.1V | Powertrain: Balanced</p>
+                          {selectedSubItem === 'scan' && (
+                            <>
+                              <CheckCircle2 className="h-10 w-10 text-emerald-400 mb-1.5" />
+                              <h4 className="text-white font-semibold text-xs uppercase tracking-wider">102-Point Engine Pulse</h4>
+                              <p className="text-emerald-400 text-[9px] font-mono mt-0.5 tracking-wider font-semibold">ALL ECU SYSTEMS RUNNING OPTIMAL</p>
+                              <p className="text-zinc-300 text-[10.5px] mt-0.5 max-w-xs leading-normal">
+                                Automatically parses powertrain diagnostics. Safely guards against hidden engine issues.
+                              </p>
+                            </>
+                          )}
+                          {selectedSubItem === 'battery' && (
+                            <>
+                              <Zap className="h-10 w-10 text-amber-400 mb-1.5 animate-bounce" />
+                              <h4 className="text-white font-semibold text-xs uppercase tracking-wider">Alternator Voltage Guard</h4>
+                              <p className="text-amber-400 text-[9px] font-mono mt-0.5 tracking-wider font-semibold">COLD-CRANK CALIBRATION OK | 14.1V</p>
+                              <p className="text-zinc-300 text-[10.5px] mt-0.5 max-w-xs leading-normal">
+                                Proactively alerts you if vehicle batteries deteriorate prior to cold freezing winter weather.
+                              </p>
+                            </>
+                          )}
                         </motion.div>
                       )}
 
                       {activeHotspot === 'cloud' && (
                         <motion.div 
-                          key="cloud-alert"
+                          key={`cloud-${selectedSubItem}`}
                           initial={{ opacity: 0, scale: 0.95 }}
                           animate={{ opacity: 1, scale: 1 }}
                           exit={{ opacity: 0, scale: 0.95 }}
-                          className="text-center"
+                          className="text-center px-2 flex flex-col items-center"
                         >
-                          <Smartphone className="h-12 w-12 text-[#06B6D4] mx-auto mb-2" />
-                          <h4 className="text-white font-semibold text-sm">Caretaker Companion App</h4>
-                          <p className="text-zinc-300 text-xs mt-1">Encrypted GPS update transmitted 2 seconds ago. Parent safe in Edmonton winter blizzard.</p>
+                          {selectedSubItem === 'gps' && (
+                            <>
+                              <MapPin className="h-10 w-10 text-red-400 mb-1.5 animate-bounce" />
+                              <h4 className="text-white font-semibold text-xs uppercase tracking-wider">Encrypted GPS Circle</h4>
+                              <p className="text-zinc-300 text-[10.5px] mt-0.5 max-w-xs leading-normal">
+                                Real-time location sync. Confirm your parent is driving on-track without nagging text messages.
+                              </p>
+                            </>
+                          )}
+                          {selectedSubItem === 'arrival' && (
+                            <>
+                              <Smartphone className="h-10 w-10 text-cyan-400 mb-1.5" />
+                              <h4 className="text-white font-semibold text-xs uppercase tracking-wider">Auto Boundary Notifications</h4>
+                              <p className="text-zinc-300 text-[10.5px] mt-0.5 max-w-xs leading-normal">
+                                Sends family caretakers a secure SMS confirmation the moment aging parents arrive back home safely.
+                              </p>
+                            </>
+                          )}
                         </motion.div>
                       )}
                     </AnimatePresence>
                   </div>
 
-                  {/* Horizon Line simulation */}
-                  <div className="absolute inset-x-0 bottom-8 h-[1px] bg-white/10 border-dashed z-0 pointer-events-none" />
+                  {/* Dynamic Inline Simulator Submenu Selection */}
+                  <div className="z-10 flex justify-center space-x-1 bg-zinc-900/90 backdrop-blur-md px-1.5 py-1 rounded-md border border-white/5 mx-2">
+                    {activeHotspot === 'dashcam' && (
+                      <>
+                        <button
+                          onClick={() => setSelectedSubItem('drift')}
+                          className={`px-2 py-0.5 rounded text-[9px] font-mono uppercase tracking-tight transition ${
+                            selectedSubItem === 'drift' ? 'bg-[#06B6D4] text-zinc-950 font-bold' : 'text-zinc-400 hover:text-white'
+                          }`}
+                        >
+                          Lane Drift
+                        </button>
+                        <button
+                          onClick={() => setSelectedSubItem('tailgate')}
+                          className={`px-2 py-0.5 rounded text-[9px] font-mono uppercase tracking-tight transition ${
+                            selectedSubItem === 'tailgate' ? 'bg-[#06B6D4] text-zinc-950 font-bold' : 'text-zinc-400 hover:text-white'
+                          }`}
+                        >
+                          Safe Dist.
+                        </button>
+                        <button
+                          onClick={() => setSelectedSubItem('drowsy')}
+                          className={`px-2 py-0.5 rounded text-[9px] font-mono uppercase tracking-tight transition ${
+                            selectedSubItem === 'drowsy' ? 'bg-[#06B6D4] text-zinc-950 font-bold' : 'text-zinc-400 hover:text-white'
+                          }`}
+                        >
+                          Focus
+                        </button>
+                      </>
+                    )}
+
+                    {activeHotspot === 'obd' && (
+                      <>
+                        <button
+                          onClick={() => setSelectedSubItem('scan')}
+                          className={`px-2.5 py-0.5 rounded text-[9px] font-mono uppercase tracking-tight transition ${
+                            selectedSubItem === 'scan' ? 'bg-[#06B6D4] text-zinc-950 font-bold' : 'text-zinc-400 hover:text-white'
+                          }`}
+                        >
+                          102-Pt Scan
+                        </button>
+                        <button
+                          onClick={() => setSelectedSubItem('battery')}
+                          className={`px-2.5 py-0.5 rounded text-[9px] font-mono uppercase tracking-tight transition ${
+                            selectedSubItem === 'battery' ? 'bg-[#06B6D4] text-zinc-950 font-bold' : 'text-zinc-400 hover:text-white'
+                          }`}
+                        >
+                          Battery Voltage
+                        </button>
+                      </>
+                    )}
+
+                    {activeHotspot === 'cloud' && (
+                      <>
+                        <button
+                          onClick={() => setSelectedSubItem('gps')}
+                          className={`px-2.5 py-0.5 rounded text-[9px] font-mono uppercase tracking-tight transition ${
+                            selectedSubItem === 'gps' ? 'bg-[#06B6D4] text-zinc-950 font-bold' : 'text-zinc-400 hover:text-white'
+                          }`}
+                        >
+                          GPS sync
+                        </button>
+                        <button
+                          onClick={() => setSelectedSubItem('arrival')}
+                          className={`px-2.5 py-0.5 rounded text-[9px] font-mono uppercase tracking-tight transition ${
+                            selectedSubItem === 'arrival' ? 'bg-[#06B6D4] text-zinc-950 font-bold' : 'text-zinc-400 hover:text-white'
+                          }`}
+                        >
+                          Arrival Alerts
+                        </button>
+                      </>
+                    )}
+                  </div>
+
+                  {/* Horizon Line simulation offset */}
+                  <div className="absolute inset-x-0 bottom-14 h-[1px] bg-white/10 border-dashed z-0 pointer-events-none" />
                 </div>
 
                 {/* Hardware Toggle Panels */}
