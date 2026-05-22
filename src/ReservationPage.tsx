@@ -22,7 +22,9 @@ import {
   HelpCircle, 
   Package, 
   AlertCircle,
-  Sparkles
+  Sparkles,
+  Play,
+  Activity
 } from 'lucide-react';
 
 // Explicit Type Definitions for Tiers
@@ -100,6 +102,7 @@ export default function ReservationPage() {
   const [stripeSimulatorOpen, setStripeSimulatorOpen] = useState(false);
   const [stripeError, setStripeError] = useState<string | null>(null);
   const [isProcessingRedirect, setIsProcessingRedirect] = useState(false);
+  const [isVideoModalOpen, setIsVideoModalOpen] = useState(false);
 
   // Dropdown options arrays
   const yearsList = Array.from({ length: 18 }, (_, i) => String(2025 - i)); // 2025 down to 2008
@@ -420,19 +423,30 @@ export default function ReservationPage() {
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 mb-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 mb-3">
                 <button
                   onClick={() => scrollToSection('pricing')}
-                  className="px-8 py-4 text-sm font-semibold uppercase tracking-wider text-white bg-zinc-950 hover:bg-[#06B6D4] hover:scale-101 hover:shadow-md transition-all duration-300 rounded text-center cursor-pointer"
+                  className="px-6 py-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-white bg-zinc-950 hover:bg-[#06B6D4] hover:scale-101 hover:shadow-md transition-all duration-300 rounded text-center cursor-pointer"
                 >
                   Lock In My Founding Price &rarr;
                 </button>
                 
                 <button
                   onClick={() => scrollToSection('how-it-works')}
-                  className="px-8 py-4 text-sm font-semibold uppercase tracking-wider text-zinc-900 bg-transparent hover:bg-zinc-100 border border-zinc-250 rounded text-center transition"
+                  className="px-6 py-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-900 bg-transparent hover:bg-zinc-100 border border-zinc-250 rounded text-center transition cursor-pointer"
                 >
-                  See How It Works
+                  How It Works
+                </button>
+
+                <button
+                  onClick={() => setIsVideoModalOpen(true)}
+                  className="px-5 py-4 text-xs sm:text-sm font-semibold uppercase tracking-wider text-zinc-950 bg-white hover:bg-zinc-50 border border-zinc-250 rounded text-center flex items-center justify-center space-x-2 transition cursor-pointer group shadow-xs hover:border-cyan-400"
+                >
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-[#06B6D4]"></span>
+                  </span>
+                  <span>Watch Video</span>
                 </button>
               </div>
 
@@ -453,8 +467,187 @@ export default function ReservationPage() {
                 
                 {/* Windshield Graphic Window & Hotspot Controller */}
                 <div className="relative bg-zinc-950 aspect-16/10 rounded-lg overflow-hidden border border-zinc-800 flex flex-col justify-between p-4 shadow-inner">
+                  
+                  {/* Background Video Layer */}
+                  <div className="absolute inset-0 w-full h-full z-0 overflow-hidden bg-zinc-950">
+                    <AnimatePresence mode="wait">
+                      {activeHotspot === 'dashcam' && (
+                        <motion.video
+                          key="video-dashcam"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 0.55 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.5 }}
+                          src="https://assets.mixkit.co/videos/preview/mixkit-windshield-view-of-a-car-driving-on-a-highway-41618-large.mp4"
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {activeHotspot === 'obd' && (
+                        <motion.video
+                          key="video-obd"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 0.5 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.5 }}
+                          src="https://assets.mixkit.co/videos/preview/mixkit-speedometer-of-a-car-accelerating-on-an-expressway-41620-large.mp4"
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {activeHotspot === 'cloud' && (
+                        <motion.video
+                          key="video-cloud"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 0.6 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.5 }}
+                          src="https://assets.mixkit.co/videos/preview/mixkit-top-view-of-a-car-driving-on-a-road-in-winter-41595-large.mp4"
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </AnimatePresence>
+                    {/* Dark Vignette Overlay to ensure text overlays have supreme contrast */}
+                    <div className="absolute inset-0 bg-radial-[circle_at_center,transparent_20%,rgba(9,9,11,0.85)_70%]" />
+                    <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-zinc-950/95 to-transparent" />
+                  </div>
+
+                  {/* High Fidelity Interactive Overlay HUD Elements */}
+                  <div className="absolute inset-0 z-5 pointer-events-none">
+                    <AnimatePresence mode="wait">
+                      {activeHotspot === 'dashcam' && selectedSubItem === 'drift' && (
+                        <motion.div
+                          key="drift-hud"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="w-full h-full relative"
+                        >
+                          {/* Left boundary marker line */}
+                          <div className="absolute left-[15%] bottom-1/4 w-[1px] h-32 bg-yellow-400 rotate-[35deg] origin-bottom shadow-[0_0_8px_rgba(250,204,21,0.6)] animate-pulse" />
+                          {/* Right boundary marker line */}
+                          <div className="absolute right-[15%] bottom-1/4 w-[1px] h-32 bg-yellow-400 rotate-[-35deg] origin-bottom shadow-[0_0_8px_rgba(250,204,21,0.6)]" />
+                          {/* Floating indicator */}
+                          <div className="absolute bottom-[35%] left-1/2 -translate-x-1/2 bg-yellow-500/80 text-zinc-950 font-bold text-[8px] px-2 py-0.5 rounded-sm uppercase tracking-widest animate-pulse border border-yellow-300">
+                            Predicting Drift
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {activeHotspot === 'dashcam' && selectedSubItem === 'tailgate' && (
+                        <motion.div
+                          key="tailgate-hud"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="w-full h-full relative flex items-center justify-center -mt-4 text-center"
+                        >
+                          <div className="border border-cyan-400 bg-cyan-950/70 py-1.5 px-3 rounded-lg shadow-lg flex flex-col items-center">
+                            <span className="text-[7.5px] text-cyan-300 uppercase tracking-widest leading-none">Vehicle Detected</span>
+                            <span className="text-[11px] font-mono font-bold text-white mt-0.5">Gap Margin: 1.8s</span>
+                            <span className="text-[7px] text-[#06B6D4] font-mono leading-none mt-0.5">Auto Safety Braking Primed</span>
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {activeHotspot === 'dashcam' && selectedSubItem === 'drowsy' && (
+                        <motion.div
+                          key="drowsy-hud"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="w-full h-full relative flex items-center justify-center -mt-4"
+                        >
+                          <div className="border border-rose-500/50 bg-rose-950/60 p-2.5 rounded-full flex items-center justify-center animate-pulse w-14 h-14">
+                            <Eye className="h-5 w-5 text-rose-400" />
+                          </div>
+                          <div className="absolute bottom-[28%] left-1/2 -translate-x-1/2 bg-rose-500/80 text-white font-bold text-[8.5px] px-2 py-0.5 rounded-sm uppercase tracking-widest">
+                            Cabin Scanner: Active
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {activeHotspot === 'obd' && selectedSubItem === 'scan' && (
+                        <motion.div
+                          key="scan-hud"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="w-full h-full relative flex items-center justify-center -mt-2"
+                        >
+                          <div className="grid grid-cols-2 gap-x-4 gap-y-1 font-mono text-[7px] text-zinc-300 bg-zinc-900/90 p-2 rounded-lg border border-zinc-750 max-w-[190px]">
+                            <div className="flex justify-between border-b border-zinc-800 pb-0.5"><span>Link status:</span><span className="text-emerald-400">ONLINE</span></div>
+                            <div className="flex justify-between border-b border-zinc-800 pb-0.5"><span>ECU codes:</span><span className="text-emerald-400">0 (SAFE)</span></div>
+                            <div className="flex justify-between border-b border-zinc-800 pb-0.5"><span>Sensors:</span><span className="text-[#06B6D4]">102/102</span></div>
+                            <div className="flex justify-between border-b border-zinc-800 pb-0.5"><span>Cold cranking:</span><span className="text-emerald-400">GOOD</span></div>
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {activeHotspot === 'obd' && selectedSubItem === 'battery' && (
+                        <motion.div
+                          key="battery-hud"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="w-full h-full relative flex items-center justify-center -mt-2"
+                        >
+                          <div className="bg-zinc-900/90 border border-amber-500/40 p-2 rounded-lg flex flex-col items-center text-center">
+                            <Zap className="h-4 w-4 text-amber-400 animate-bounce mb-0.5" />
+                            <span className="text-[10px] font-mono font-bold text-zinc-100">14.1 VOLTS</span>
+                            <span className="text-[7.5px] text-amber-400 uppercase tracking-widest font-bold">Cold Weather Optimal</span>
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {activeHotspot === 'cloud' && selectedSubItem === 'gps' && (
+                        <motion.div
+                          key="gps-hud"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="w-full h-full relative flex items-center justify-center -mt-2"
+                        >
+                          <div className="bg-zinc-900/90 border border-cyan-500/40 p-2 rounded-lg text-center flex items-center space-x-1.5 shadow-lg">
+                            <MapPin className="h-4.5 w-4.5 text-rose-500 animate-bounce" />
+                            <div className="text-left font-mono">
+                              <div className="text-[8px] font-bold text-white uppercase">Live Caretaker Map</div>
+                              <div className="text-[7px] text-zinc-400">En route to: Edmonton</div>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )}
+
+                      {activeHotspot === 'cloud' && selectedSubItem === 'arrival' && (
+                        <motion.div
+                          key="arrival-hud"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          className="w-full h-full relative flex items-center justify-center -mt-2"
+                        >
+                          <div className="bg-zinc-900/95 border border-emerald-500/40 p-2 rounded-lg text-center flex flex-col items-center">
+                            <Smartphone className="h-4 w-4 text-emerald-400 animate-pulse mb-0.5" />
+                            <span className="text-[8px] text-white uppercase tracking-wider font-bold">Confirmation Received</span>
+                            <span className="text-[7px] text-emerald-400 font-mono mt-0.5">&quot;Safe Arrival&quot; SMS Sent</span>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
                   {/* Glass reflections */}
-                  <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/5 to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-linear-to-tr from-transparent via-white/5 to-transparent pointer-events-none z-6" />
                   
                   {/* Top line with active status */}
                   <div className="flex justify-between items-center z-10 font-mono">
@@ -462,11 +655,11 @@ export default function ReservationPage() {
                       <span className="h-1.5 w-1.5 bg-[#06B6D4] rounded-full animate-pulse" />
                       <span>LIVE TELEMETRY COMPLIANT</span>
                     </span>
-                    <span className="text-[10px] text-zinc-500">PIPEDA CANADIAN SERVER OK</span>
+                    <span className="text-[10px] text-zinc-500 z-10">PIPEDA CANADIAN SERVER OK</span>
                   </div>
 
                   {/* Simulated interactive dashboards with animated alert based on current hotspot & subitem */}
-                  <div className="my-auto z-10 flex flex-col items-center py-2">
+                  <div className="my-auto z-10 flex flex-col items-center py-2 relative">
                     <AnimatePresence mode="wait">
                       {activeHotspot === 'dashcam' && (
                         <motion.div 
@@ -1871,6 +2064,100 @@ export default function ReservationPage() {
                 >
                   Dismiss Overlay
                 </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* BRAND NEW HD CONCEPT VIDEO EXPLAINER MODAL DIALOG */}
+      <AnimatePresence>
+        {isVideoModalOpen && (
+          <div className="fixed inset-0 bg-zinc-950/85 backdrop-blur-md z-50 flex items-center justify-center p-4 sm:p-6 md:p-10 font-sans">
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.95, opacity: 0 }}
+              transition={{ type: 'spring', damping: 25, stiffness: 180 }}
+              className="bg-zinc-900 rounded-2xl shadow-2xl border border-zinc-800 w-full max-w-4xl overflow-hidden flex flex-col relative"
+            >
+              {/* Top Banner and Brand */}
+              <div className="absolute top-4 left-4 z-20 flex items-center space-x-2 bg-zinc-950/60 backdrop-blur-xs px-3 py-1.5 rounded-full border border-zinc-800">
+                <span className="h-2 w-2 bg-cyan-400 rounded-full animate-ping" />
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#06B6D4] font-bold">Astrateq Concept Showcase</span>
+              </div>
+
+              {/* Dismiss button */}
+              <button 
+                onClick={() => setIsVideoModalOpen(false)}
+                className="absolute top-4 right-4 z-35 bg-zinc-950/80 hover:bg-zinc-800 text-zinc-400 hover:text-white p-2 rounded-full border border-zinc-800 transition cursor-pointer"
+                title="Close Player"
+              >
+                <X className="h-5 w-5" />
+              </button>
+
+              {/* Aspect Ratio Screen Video Box Container */}
+              <div className="relative aspect-video w-full bg-zinc-950 overflow-hidden flex items-center justify-center">
+                <video
+                  src="https://assets.mixkit.co/videos/preview/mixkit-windshield-view-of-a-car-driving-on-a-highway-41618-large.mp4"
+                  autoPlay
+                  controls
+                  loop
+                  playsInline
+                  className="w-full h-full object-cover z-0"
+                />
+
+                {/* Left Floating Overlay Explaining HUD overlay triggers */}
+                <div className="absolute left-4 bottom-14 md:bottom-16 max-w-xs bg-zinc-950/90 border border-zinc-800/80 p-4 rounded-xl z-10 text-left backdrop-blur-md hidden sm:block">
+                  <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-widest text-cyan-400 mb-1">
+                    <Activity className="h-4 w-4 text-[#06B6D4]" />
+                    <span>Active Telematics AI</span>
+                  </div>
+                  <h4 className="text-sm font-semibold text-white leading-snug">Quiet Protection, Live Control</h4>
+                  <p className="text-[11px] text-zinc-400 mt-1 leading-relaxed">
+                    Watch our AI analyze 50 environmental updates per second. Safe braking thresholds are continuously evaluated to shield your parents when you can't be in the passenger seat.
+                  </p>
+                </div>
+
+                {/* Right Bottom Badge showing Canadian server and standards */}
+                <div className="absolute right-4 bottom-14 md:bottom-16 bg-zinc-950/90 border border-zinc-800/80 px-3 py-2 rounded-lg z-10 text-right backdrop-blur-md hidden md:block">
+                  <div className="text-[9px] font-mono text-zinc-500 font-bold uppercase tracking-widest">Data Residency</div>
+                  <div className="text-[10.5px] text-emerald-400 font-bold mt-0.5">100% PIPEDA Certified</div>
+                  <div className="text-[9px] text-zinc-400 font-mono mt-0.5">Toronto &amp; Montreal Hubs</div>
+                </div>
+              </div>
+
+              {/* Bottom features bar detailing the system architecture */}
+              <div className="bg-zinc-950 p-5 md:p-6 border-t border-zinc-800 grid grid-cols-1 sm:grid-cols-3 gap-4 text-left z-10">
+                <div className="border-r border-zinc-900/50 pr-2 pb-2 sm:pb-0">
+                  <div className="flex items-center space-x-2 text-[#06B6D4] mb-1">
+                    <ShieldCheck className="h-4 w-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest font-mono">1. Dual-Lens Video AI</span>
+                  </div>
+                  <p className="text-xs text-zinc-400 leading-normal">
+                    Fitted high-contrast windshield unit scans physical markers, distances, and driver fatigue indicators synchronously.
+                  </p>
+                </div>
+
+                <div className="border-r border-zinc-900/50 pr-2 pb-2 sm:pb-0 sm:pl-2">
+                  <div className="flex items-center space-x-2 text-amber-400 mb-1">
+                    <Zap className="h-4 w-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest font-mono">2. Plug &amp; Play Diagnostics</span>
+                  </div>
+                  <p className="text-xs text-zinc-400 leading-normal">
+                    Small smart OBD dongle taps directly into powertrain sensors to predict and alert caretakers of vehicle wear.
+                  </p>
+                </div>
+
+                <div className="sm:pl-2">
+                  <div className="flex items-center space-x-2 text-rose-400 mb-1">
+                    <Smartphone className="h-4 w-4" />
+                    <span className="text-[10px] font-bold uppercase tracking-widest font-mono">3. Caretaker Sync Circle</span>
+                  </div>
+                  <p className="text-xs text-zinc-400 leading-normal">
+                    Secure server sends family members geofence reports and instant SMS confirmations upon safe trip closures.
+                  </p>
+                </div>
               </div>
             </motion.div>
           </div>
